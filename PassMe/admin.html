@@ -1,0 +1,29 @@
+<div class="container">
+    <h1 class="display-4">Admin Account:</h1>
+    <div style="display: inline-block;"><img src="img/admin.png" height="150px" width="150px"></div>
+    <div style="display: inline-block;">
+        <strong><span id="adminUsername"></span></strong><br>
+        <button type='button' id="changeAdminPWord" class='btn btn-primary btn-sm'>Change Password</button>
+    </div>
+</div>
+<script>
+    var database = GetJSON("Admin");
+    $("#adminUsername").html(database.Admin[1].Username);
+    $("#changeAdminPWord").click(function () {
+        var conf = confirm("Change Admin Password?");
+        if(conf){
+            //loads the edit admin page
+            $("#page-content-wrapper").load("edit_admin.html", function (responseTxt, statusTxt, xhr) {
+                if (statusTxt == "error")
+                    alert(xhr.status + ": " + xhr.statusText);
+                else{
+                    var username = database.Admin[1].Username;
+                    var password = database.Admin[1].Password;
+                    $("#editInputUser").val(username);
+                    $("#editInputUserPassword").val(password);
+                }
+            });
+            
+        }
+    });
+</script>

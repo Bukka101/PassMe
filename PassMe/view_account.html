@@ -1,0 +1,81 @@
+<div class="container" style="overflow: auto;">
+    <h1 class="display-4">View Account:</h1>
+    <table class="table" id="viewTable">
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Application</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Password</th>
+            <th scope="col">Password Strength</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <script>
+            ViewAccount(viewId);
+
+            //Triggers when edit button is clicked, to modify account record. Loads the edit_account page and populates the form fields
+            $(".editButton").click(function () {
+                var conf = confirm("Edit this entry?");
+                if(conf){
+                    var id = $(this).parent().siblings(":first-child").html();
+                    $("#page-content-wrapper").load("edit_account.html", function (responseTxt, statusTxt, xhr) {
+                        if (statusTxt == "error")
+                            alert(xhr.status + ": " + xhr.statusText);
+                        else{
+                            var json = GetJSON("Apps");
+                            var app;
+                            var username;
+                            var email;
+                            var password;
+                            var strength;
+                            for(var i=0; i<json.length; i++){
+                                if(json[i].id == id){
+                                    app = json[i].Application;
+                                    username = json[i].Username;
+                                    email = json[i].Email;
+                                    password = json[i].Password;
+                                    strength = json[i].Password_Strength;
+                                }
+                            }
+                            $("#editInputId").val(id);
+                            $("#editInputApp").val(app);
+                            $("#editInputAppUser").val(username);
+                            $("#editInputEmail").val(email);
+                            $("#editInputAppPassword").val(password);
+                        }
+                    });
+                    
+                }
+            });
+
+            //Triggers to delete account record
+            $(".deleteButton").click(function () {
+                var conf = confirm("Are you sure you want to delete this entry?");
+                var index;
+                if(conf){
+                    var id = $(this).parent().siblings(":first-child").html();
+                    database = GetJSON("Apps");
+                    for( var i=0; i<database.length; i++){
+                        if(database[i].id == id){
+                            database.splice(i,1);
+                            break;
+                        }
+                    }
+                    localStorage.setItem("Apps", JSON.stringify(database));
+                    alert("Data deleted successfully");
+
+                    $("#container").load("dashboard.html", function (responseTxt, statusTxt, xhr) {
+                        if (statusTxt == "error")
+                            alert(xhr.status + ": " + xhr.statusText);
+                    });
+                }
+            });
+
+            </script>
+        </tbody>
+      </table>
+</div>
